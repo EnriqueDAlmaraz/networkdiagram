@@ -22,34 +22,36 @@ public class NetworkDiagram {
         // Add predecessors as parents
         for(Activity node : nodes) {
         	for (Predecessor p : node.predecessors) {
+        		int pathDuration = 0;				//Check where to actually put it 
         		for(Activity n : nodes) {
         			if (n.getName().equals(p.getName())) {
-        				nodes[n.id].addChild(node);
+        				nodes[n.id].addChild(node);  
         			}
         		}
         	}
         }
+        return listPaths();
         
         // ListPaths
         List<List<Activity>> lists = Paths.getPaths(nodes[0]);
+        ArrayList<Integer> pathsDuration = Paths.pathDuration(lists);
         String output = "";
+        int i = 0;								//To print the durations
         for(List<Activity> list : lists) {
-            for(count = 0; count < list.size(); count++) {
-                //System.out.print(list.get(count).getName());
+            for(int count = 0; count < list.size(); count++) {
                 output += list.get(count).getName();
                 if(count != list.size() - 1) {
-                    //System.out.print("-");
                     output += "-";
-                }
-            }
-           // System.out.println();
-            output += "\n";
+                }              
+            }                     
+            output += "  " + pathsDuration.get(i) + "\n";
+            i++;
+            System.out.println(i);            
         }
         return output;
     }
    
     public Iterator<Activity> iterator() {
-		return activities.iterator();
+		  return activities.iterator();
 	}   
-
 }

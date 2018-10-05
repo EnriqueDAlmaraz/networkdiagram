@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Activity implements Comparable<Activity> {
     private String name;
-    public int id, duration, rank;
+    public int id, duration;
     private Activity parent;
     private List<Activity> children;
     List <Predecessor> predecessors;
@@ -14,7 +14,6 @@ public class Activity implements Comparable<Activity> {
         this.setName(name);
         this.children = new LinkedList<>();
         this.predecessors = new LinkedList<>();
-        this.rank = 0;
     }
     
     // Predecessor List
@@ -35,7 +34,6 @@ public class Activity implements Comparable<Activity> {
 		if(!exists(p)) {
 			Predecessor newP = new Predecessor(p);
 			this.predecessors.add(newP);
-			this.rank = this.rank + 1;
 		}
 	}
 
@@ -105,3 +103,4 @@ public class Activity implements Comparable<Activity> {
 	}
 
 }
+

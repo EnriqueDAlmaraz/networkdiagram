@@ -1,12 +1,41 @@
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Activity {
+
+/**
+ * <center>
+ * <table cellpadding="5" cellspacing="5">
+ *  <tr>
+ *  <td valign="top">
+ *   Course: CSE 360<br>
+ *   Section Line Number: 89049<br>
+ *   Project: Activity Network<br>
+ *  </td>
+ *  
+ *  <td valign="top">
+ *   Contributor: Anthony Benites,<br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ * 
+ *  <td valign="top">
+ *   Contributor: Luis Claramunt <br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ * 
+ * <td valign="top">
+ *   Contributor: Enrique Almaraz<br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ *  </tr>
+ * </table>
+ * </center>
+ */
+public class Activity implements Comparable<Activity> {
     private String name;
-    public int id;
-    private int duration;
+    public int id, duration, rank;
     private Activity parent;
     private List<Activity> children;
     List <Predecessor> predecessors;
@@ -15,38 +44,43 @@ public class Activity {
         this.setName(name);
         this.children = new LinkedList<>();
         this.predecessors = new LinkedList<>();
+        this.rank = 0;
     }
     
     // Predecessor List
-    public Iterator<Predecessor> iterator()
-	{
+    public Iterator<Predecessor> iterator() {
 		return predecessors.iterator();
 	}
     
-    public boolean exists(String p2)
-	{
+    public boolean exists(String p2) {
 		boolean exists = false;
-		for(Predecessor p : predecessors)
-		{
+		for(Predecessor p : predecessors) {
 			if (p.getName().toLowerCase().equals(p2.toLowerCase()))
 				exists = true;
 		}
 		return exists;
 	}
     
-    public void addPredecessor(String p) 
-	{
-		if(!exists(p))
-		{
+    public void addPredecessor(String p) {
+		if(!exists(p)) {
 			Predecessor newP = new Predecessor(p);
 			this.predecessors.add(newP);
+			this.rank = this.rank + 1;
 		}
 	}
 
     // Child Node
     public void addChild(Activity child) {
-        this.children.add(child);
-        child.setParent(this);
+    	boolean exists = false;
+    	for (Activity c: this.children) {
+    		if (c.getName().equals(child.getName())) {
+    			exists = true;
+    		}
+    	}
+    	if (!exists) {
+    		this.children.add(child);
+    		child.setParent(this);
+    	}
     }
 
     public List<Activity> getChildren() {
@@ -65,23 +99,39 @@ public class Activity {
     	this.id = id;
     }
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	public int getDuration()
-	{
+	public int getDuration() {
 		return duration;
 	}
 
-	public void setDuration(int duration)
-	{
+	public void setDuration(int duration) {
 		this.duration = duration;
 	}
+	
+	public String printPredecessors() {		
+		String names = new String();
+		for (int i = 0; i < predecessors.size(); i++) {
+			names += predecessors.get(i).getName() + " ";
+		}
+		
+		return names;
+	}
+	
+	public String toString() {
+		String result = "Node: "  + name  + "\nPredecessors: " +
+				printPredecessors() + "\nDuration: " + duration + "\n____________\n";				
+		return result;
+	}
+	
+	public int compareTo(Activity i) {
+		return i.predecessors.size() - this.predecessors.size();
+	}
+
 }

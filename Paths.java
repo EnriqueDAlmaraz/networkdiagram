@@ -1,3 +1,32 @@
+
+/**
+ * <center>
+ * <table cellpadding="5" cellspacing="5">
+ *  <tr>
+ *  <td valign="top">
+ *   Course: CSE 360<br>
+ *   Section Line Number: 89049<br>
+ *   Project: Activity Network<br>
+ *  </td>
+ *  
+ *  <td valign="top">
+ *   Contributor: Anthony Benites,<br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ * 
+ *  <td valign="top">
+ *   Contributor: Luis Claramunt <br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ * 
+ * <td valign="top">
+ *   Contributor: Enrique Almaraz<br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ *  </tr>
+ * </table>
+ * </center>
+ */
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,5 +57,18 @@ public class Paths {
         } else {
             return getPaths0(head);
         }
+    }
+    
+    public static ArrayList<Integer> pathDuration(List<List<Activity>> list) {
+    	ArrayList<Integer> pathsDuration = new ArrayList<Integer>();
+    	int duration = 0;
+    	for (int i = 0; i < list.size(); i++) {
+    		duration = 0;
+    		for(int j = 0; j < list.get(i).size(); j++) {
+    			duration += list.get(i).get(j).getDuration();
+    		}
+    		pathsDuration.add(duration);
+    	}   	
+    	return pathsDuration;
     }
 }

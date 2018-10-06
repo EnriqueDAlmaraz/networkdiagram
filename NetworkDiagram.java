@@ -1,136 +1,49 @@
 import java.util.List;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+
+/**
+ * <center>
+ * <table cellpadding="5" cellspacing="5">
+ *  <tr>
+ *  <td valign="top">
+ *   Course: CSE 360<br>
+ *   Section Line Number: 89049<br>
+ *   Project: Activity Network<br>
+ *  </td>
+ *  
+ *  <td valign="top">
+ *   Contributor: Anthony Benites,<br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ * 
+ *  <td valign="top">
+ *   Contributor: Luis Claramunt <br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ * 
+ * <td valign="top">
+ *   Contributor: Enrique Almaraz<br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ *  </tr>
+ * </table>
+ * </center>
+ */
 public class NetworkDiagram {
-	static Activity[] nodes;
-    static List<Activity> activities;
-	private static boolean start, quit;
-	static Scanner input;
-    
-    public static void main(String[] args) {
-    	start = true;
-		quit = false;
-		Scanner input = new Scanner(System.in);
-		
-		while (!quit)
-		{
-			if (start)
-			{
-				System.out.println("\nWhat would you like to do? (Enter number only)");
-				System.out.println("1: Start new Network");
-				System.out.println("2: Quit");
-				
-				String response = input.next();
-				
-				switch (response)
-				{
-				    case "1": 
-				    	activities = new LinkedList<>();
-				    	start = false;
-				    	break;
-				    case "2":
-				    	quit = true;
-				    	break;
-				    default: 
-				    	System.out.println("Your selection was invalid.");
-				}
-			}
-			else
-			{
-				System.out.println("\nWhat would you like to do? (Enter number only)");
-				System.out.println("1: Add Activity");
-				System.out.println("2: Print Network");
-				System.out.println("3: Quit");
-				
-				String response = input.next();
-				
-				switch (response)
-				{
-				    case "1": 
-				    	addActivity(input);
-				    	break;
-				    case "2": 
-				    	createTree();
-				    	break;
-				    case "3": 
-				    	quit = true;
-				    	break;
-				    default: 
-				    	System.out.println("Your selection was invalid.");
-				}
-			}
-		}
-		System.out.println("Goodbye!");
-	}
+    private static List<Activity> activities;
+    private static List<Path> paths;
 	
-	public static void addActivity(Scanner input)
-	{
-		System.out.println("Activity: ");
-		String activity = input.next();
-		Activity a = new Activity(activity);
-		
-		System.out.println("Predecessor? (y/n): ");
-		String pYN = input.next();
-		
-		while (pYN.toLowerCase().equals("y")) {
-			System.out.println("Predecessor for " + activity + ": ");
-			String p = input.next();
-			a.addPredecessor(p);
-			
-			System.out.println("More predecessors? (y/n): ");
-			pYN = input.next();
-		}
-		
-		int duration = getInt("Duration: " + activity + "?", 1, 1000, input);
-		a.setDuration(duration);
-		
-		try
-		{
-			activities.add(a);
-		}
-		catch (Exception e)
-		{
-			System.out.println("Error adding activity.");
-		}
-	}
-	
-	private static int getInt(String prompt, int min, int max, Scanner input)
-    {
-    	int i;
+	public static String createTree(List<Activity> listActivity) {
+    	// Create activities list
+		activities = listActivity;
+		Collections.sort(activities);
+		Activity[] nodes = new Activity[activities.size()];
     	
-    	while (true)
-    	{
-    		System.out.println(prompt);
-    		try
-    		{
-    			i = input.nextInt();
-    			if(i < min || i > max)
-		        {
-		        	while(i < min || i > max)
-		        	{
-		        		System.out.println("Please enter an integer between " + min + " and " + max);
-		        		i = input.nextInt();
-		        	}
-		        }
-    		}
-    		catch (Exception e)
-    		{
-    			System.out.println("Please enter an integer between " + min + " and " + max);
-    			input.next();
-    			continue;
-    		}
-    		if (i >= min && i <= max)
-    			return i;
-    	}
-    }
-	
-	public static void createTree() {
-    	// add activities
-    	nodes = new Activity[activities.size()];
-    	
-    	// Create Tree
+    	// Create Empty tree
     	int count = 0;
         for(Activity activity : activities) {
             nodes[count] = activity;
@@ -148,24 +61,95 @@ public class NetworkDiagram {
         		}
         	}
         }
-        listPaths();
-    }
-    
-    public static void listPaths() {
-        List<List<Activity>> lists = Paths.getPaths(nodes[0]);
+        
+        // Create list of paths
+        paths = new LinkedList<>();
+        
+        List<List<Activity>> lists = getPaths(nodes[0]);
         for(List<Activity> list : lists) {
-            for(int count = 0; count < list.size(); count++) {
-                System.out.print(list.get(count).getName());
+        	// Get paths one at a time
+        	Path path = new Path();
+        	String pathName = "";
+            for(count = 0; count < list.size(); count++) {
+            	Activity currentNode = list.get(count);
+            	path.addActivity(currentNode);
+                pathName += currentNode.getName();
                 if(count != list.size() - 1) {
-                    System.out.print("-");
+                    pathName += "-";
                 }
             }
-            System.out.println();
+            pathName+= ": " + path.getDuration() + "\n";
+            path.setName(pathName);
+            
+            // Is this path already in the list?
+            boolean exists = false;
+            for (Path p: paths) {
+            	if (p.getName().equals(path.getName())) {
+            		exists = true;
+            	}
+            }
+            if (!exists) {
+            	paths.add(path);
+            }
+        }
+        
+        String output = "";
+        Collections.sort(paths);
+        for (Path p: paths) {
+        	output += p.getName();
+        }
+        return output;
+    }
+	
+    public static List<List<Activity>> getPaths(Activity head) {
+        if(head == null) { 
+            return new ArrayList<>();
+        } else { 
+        	// Recursively find each path with getEachPath()
+        	List<List<Activity>> retLists = new ArrayList<>();
+
+            if(head.getChildren().size() == 0) {
+                List<Activity> leafList = new LinkedList<>();
+                leafList.add(head);
+                retLists.add(leafList);
+            } else {
+                for (Activity node : head.getChildren()) {
+                    List<List<Activity>> nodeLists = getEachPath(node);
+                    for (List<Activity> nodeList : nodeLists) {
+                        nodeList.add(0, head);
+                        retLists.add(nodeList);
+                    }
+                }
+            }
+            return retLists;
         }
     }
     
-    public Iterator<Activity> iterator()
-	{
+    // Recursive function to find each path
+    private static List<List<Activity>> getEachPath(Activity pos) {
+        List<List<Activity>> retLists = new ArrayList<>();
+
+        if(pos.getChildren().size() == 0) {
+            List<Activity> leafList = new LinkedList<>();
+            leafList.add(pos);
+            retLists.add(leafList);
+        } else {
+            for (Activity node : pos.getChildren()) {
+                List<List<Activity>> nodeLists = getEachPath(node);
+                for (List<Activity> nodeList : nodeLists) {
+                    nodeList.add(0, pos);
+                    retLists.add(nodeList);
+                }
+            }
+        }
+        return retLists;
+    }
+   
+    public Iterator<Activity> iterator() {
 		return activities.iterator();
 	}
+    
+    public Iterator<Path> iterator1() {
+		return paths.iterator();
+	} 
 }

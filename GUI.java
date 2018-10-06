@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GUI {
@@ -21,9 +22,10 @@ public class GUI {
 	private JTextArea outputCreatedActivities, outputSortedPaths;
 	private JButton btnRestart, btnAbout, btnEnter, btnSubmit, btnHelp;
 	private List<Activity> activities;
+	private int justOnce = 0;
 	
-	public GUI(List<Activity> listActivity) {
-		this.activities = listActivity;
+	public GUI() {
+		activities = new LinkedList<>();
 		
 		frmTeam = new JFrame();
 		frmTeam.setTitle("Path Analysis");
@@ -174,7 +176,7 @@ public class GUI {
 				}
 			}		
 			//User clicks submit
-			if(event.getSource() == btnSubmit && activities.size() != 0) {		
+			if(event.getSource() == btnSubmit && activities.size() != 0 && justOnce == 0) {		//justOnce is here if we want to allow the user to submit it only once
 				outputSortedPaths.setText(null);
 				outputSortedPaths.append(NetworkDiagram.createTree(activities));
 				//justOnce = 1;

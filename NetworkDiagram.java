@@ -32,6 +32,7 @@ import java.util.LinkedList;
  * </table>
  * </center>
  */
+
 public class NetworkDiagram {
     private static List<Activity> activities;
     private static List<Path> paths;
@@ -39,6 +40,8 @@ public class NetworkDiagram {
 	public static String createTree(List<Activity> listActivity) {
     	// Create activities list
 		activities = listActivity;
+		Activity startNode = new Activity("REALSTARTNODE");
+		activities.add(0, startNode);
 		Collections.sort(activities);
 		Activity[] nodes = new Activity[activities.size()];
     	
@@ -48,10 +51,16 @@ public class NetworkDiagram {
             nodes[count] = activity;
             nodes[count].setId(count);
             count++;
-        }
+        }     
         
         // Add predecessors as parents
         for(Activity node : nodes) {
+        	// Connect empty predecessor nodes to startNode
+        	if (node.predecessors.size()!=0) {
+	        	if (node.predecessors.get(0).getName().isEmpty()) {
+	        		node.predecessors.get(0).setName(startNode.getName());
+	        	}
+        	}
         	for (Predecessor p : node.predecessors) {
         		for(Activity n : nodes) {
         			if (n.getName().equals(p.getName())) {
@@ -60,7 +69,7 @@ public class NetworkDiagram {
         		}
         	}
         }
-        
+
         // Create list of paths
         paths = new LinkedList<>();
         
@@ -71,11 +80,13 @@ public class NetworkDiagram {
         	String pathName = "";
             for(count = 0; count < list.size(); count++) {
             	Activity currentNode = list.get(count);
-            	path.addActivity(currentNode);
-                pathName += currentNode.getName();
-                if(count != list.size() - 1) {
-                    pathName += "-";
-                }
+            	if (!currentNode.getName().equals(startNode.getName())) {
+            		path.addActivity(currentNode);
+                    pathName += currentNode.getName();
+                    if(count != list.size() - 1) {
+                        pathName += "-";
+                    }
+            	}
             }
             pathName+= ": " + path.getDuration() + "\n";
             path.setName(pathName);

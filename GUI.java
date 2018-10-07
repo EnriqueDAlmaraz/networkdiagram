@@ -42,7 +42,6 @@ import java.util.List;
  *  </tr>
  * </table>
  * </center>
-
  */
 public class GUI {
 

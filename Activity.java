@@ -1,4 +1,3 @@
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -44,7 +43,7 @@ public class Activity implements Comparable<Activity> {
         this.setName(name);
         this.children = new LinkedList<>();
         this.predecessors = new LinkedList<>();
-        this.rank = 0;
+        this.duration = 0;
     }
     
     // Predecessor List
@@ -131,7 +130,7 @@ public class Activity implements Comparable<Activity> {
 	}
 	
 	public int compareTo(Activity i) {
-		return i.predecessors.size() - this.predecessors.size();
+		return this.predecessors.size() - i.predecessors.size();
 	}
 
 }

@@ -15,6 +15,35 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * <center>
+ * <table cellpadding="5" cellspacing="5">
+ *  <tr>
+ *  <td valign="top">
+ *   Course: CSE 360<br>
+ *   Section Line Number: 89049<br>
+ *   Project: Activity Network<br>
+ *  </td>
+ *  
+ *  <td valign="top">
+ *   Contributor: Anthony Benites,<br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ * 
+ *  <td valign="top">
+ *   Contributor: Luis Claramunt <br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ * 
+ * <td valign="top">
+ *   Contributor: Enrique Almaraz<br>
+ *   Arizona State Univeristy<br>
+ *  </td>
+ *  </tr>
+ * </table>
+ * </center>
+
+ */
 public class GUI {
 
 	public JFrame frmTeam;
@@ -120,9 +149,13 @@ public class GUI {
 		//About button already has an action  
 		btnAbout = new JButton("");
 		btnAbout.setForeground(Color.BLACK);
+		JLabel about = new JLabel("<html>About: <br>Hello and welcome to our Path Analysis application. This program finds relations between <br>existing nodes " 
+				+ "based on the dependencies that exist between them.<br><br>The main functionality of the program is to find all the paths between<br>the existing nodes," 
+				+ "calculate their duration, and sort them in a descending order based on it.");
+		about.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(frmTeam, "FAQ: \n 1. This is a test \n 2. This is a test \n 3. This is a test", null, JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null,about,"ABOUT",JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		
@@ -132,9 +165,23 @@ public class GUI {
 		frmTeam.getContentPane().add(btnAbout);
 		
 		btnHelp = new JButton("Help");
+		JLabel help = new JLabel("<html>Help:<br>This application interface takes in three different inputs, and all are needed to proceed:<br>" + 
+				"<br>" + 
+				"<b>Name</b>: The name of this activity.<br>" + 
+				"<br>" + 
+				"<b>Duration</b>: The duration of this activity.<br>" + 
+				"<br>" + 
+				"<b>Dependencies</b>: The dependencies that this activity related to.<br>" + 
+				"<br>" + 
+				"<b>On the right-hand side:</b> there is a preview feature that displays all current node data when the button Submit is entered. <br>" + 
+				"<br>" + 
+				"<b>Restart button:</b> clears all the information that the user has previously entered<br>" +
+				"<br>" +
+				"<b>Enter button:</b> allows the user to enter in the currently filled text boxes as an activity");
+		help.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frmTeam, "About: \n Hello and Welcome to Team 11's CSE 360 Project", null, JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null,help,"HELP",JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		
@@ -143,7 +190,6 @@ public class GUI {
 	}
 	
 	//This class determines what the buttons are actually going to do 
-//This class determines what the buttons are actually going to do 
 	private class ButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent event) {		
 			List<String> predecessors = new ArrayList<String>();	//Store the predecessors read as strings from the textField
@@ -197,11 +243,6 @@ public class GUI {
 	//Find errors such as missing and invalid information
 	private boolean findInputErrors() {
 		boolean errorFound = false;
-		//Check if the predecessor exist 
-		if (alreadyExists(textFieldPredecessor.getText()) == false && textFieldPredecessor.getText().isEmpty() == false) {
-			JOptionPane.showMessageDialog(frmTeam, "One of the dependencies entered does not exist", null, JOptionPane.ERROR_MESSAGE);
-			errorFound = true;
-		}
 		if (alreadyExists(textFieldName.getText()) == true) {
 			JOptionPane.showMessageDialog(frmTeam, "An activity under that name already exists. Please choose another one", null, JOptionPane.ERROR_MESSAGE);
 			errorFound = true;

@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-
 /**
  * <center>
  * <table cellpadding="5" cellspacing="5">
@@ -191,7 +190,6 @@ public class GUI {
 	}
 	
 	//This class determines what the buttons are actually going to do 
-	//This class determines what the buttons are actually going to do 
 	private class ButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent event) {		
 			List<String> predecessors = new ArrayList<String>();	//Store the predecessors read as strings from the textField
@@ -245,8 +243,6 @@ public class GUI {
 	//Find errors such as missing and invalid information
 	private boolean findInputErrors() {
 		boolean errorFound = false;
-		//Check if the predecessor exist 
-		
 		if (alreadyExists(textFieldName.getText()) == true) {
 			JOptionPane.showMessageDialog(frmTeam, "An activity under that name already exists. Please choose another one", null, JOptionPane.ERROR_MESSAGE);
 			errorFound = true;

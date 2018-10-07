@@ -1,8 +1,6 @@
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 
 /**
  * <center>
@@ -32,7 +30,7 @@ import java.util.List;
  * </table>
  * </center>
  */
-
+ 
 public class Path implements Comparable<Path> {
 	private List<Activity> path;
 	private String name;

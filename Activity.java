@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-
 /**
  * <center>
  * <table cellpadding="5" cellspacing="5">
@@ -33,6 +32,7 @@ import java.util.List;
  * </table>
  * </center>
  */
+
 public class Activity implements Comparable<Activity> {
     private String name;
     public int id, duration, rank;

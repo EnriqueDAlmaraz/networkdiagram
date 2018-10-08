@@ -56,7 +56,7 @@ public class Path implements Comparable<Path> {
 		for (Activity p: path) {
 			if (p.getName().equals(activity.getName())) {
 				exists = true;
-				throw new Exception();
+				throw new CycleException("Cycle found, cannot complete network. Please restart.");
 			}
 		}
 		if (!exists) {

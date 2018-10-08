@@ -225,10 +225,10 @@ public class GUI {
 				outputSortedPaths.setText(null);
 				try
 				{
-					outputSortedPaths.append(NetworkDiagram.createTree(activities));
+					outputSortedPaths.append(Network.createTree(activities));
 				} catch (Exception e)
 				{
-					outputSortedPaths.append("Cycle Error, please restart");
+					outputSortedPaths.append(e.getMessage());
 				}
 				//justOnce = 1;
 			}

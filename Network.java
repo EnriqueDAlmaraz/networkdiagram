@@ -85,12 +85,12 @@ public class Network {
         	// Get paths one at a time
         	Path path = new Path();
         	String pathName = "";
-            for(count = 0; count < list.path.size(); count++) {
-            	Activity currentNode = list.path.get(count);
+            for(count = 0; count < list.getPath().size(); count++) {
+            	Activity currentNode = list.getPath().get(count);
             	if (!currentNode.getName().equals(rootNode.getName())) {
             		path.addActivity(currentNode);
                     pathName += currentNode.getName();
-                    if(count != list.path.size() - 1) {
+                    if(count != list.getPath().size() - 1) {
                         pathName += "-";
                     }
             	}
@@ -110,11 +110,27 @@ public class Network {
             }
         }
 
+        // This whole bottom part checks to see if paths are connected to form a network, and prints each path out if so
         String output = "";
         Collections.sort(paths);
+        Path prevPath = new Path();
+        boolean pathsConnected = false;
         for (Path p: paths) {
+        	// Make sure each path is connected
+        	if (!prevPath.getPath().isEmpty()) {
+        		for (Activity a : p.getPath()) {
+        			for (Activity ap : prevPath.getPath()) {
+        				if (a.getName().equals(ap.getName())) {
+        					pathsConnected = true;
+        				}
+        			}
+        		}
+        		if (!pathsConnected) {
+            		throw new UnconnectedNodeException("Unconnected nodes found, please restart.");
+            	}
+        	}
+        	prevPath = p;
         	output += p.getName();
-        	// logic here to check if nodes are connected
         }
         return output;
     }

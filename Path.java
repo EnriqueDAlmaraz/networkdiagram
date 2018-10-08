@@ -32,7 +32,7 @@ import java.util.List;
  */
  
 public class Path implements Comparable<Path> {
-	public List<Activity> path;
+	private List<Activity> path;
 	private String name;
 	
 	public Path() {
@@ -53,10 +53,12 @@ public class Path implements Comparable<Path> {
 
 	public void addActivity(Activity activity) throws Exception {
 		boolean exists = false;
+		int count = 0;
 		for (Activity p: path) {
-			if (p.getName().equals(activity.getName())) {
+			if (p.getName().equals(activity.getName()) && count==10) {
+				count+=1;
 				exists = true;
-				throw new CycleException("Cycle found, cannot complete network. Please restart.");
+				throw new CycleException("Cycle found. Please restart. : "+p.getName());
 			}
 		}
 		if (!exists) {
@@ -81,6 +83,9 @@ public class Path implements Comparable<Path> {
 	}
 	public String getName() {
 		return this.name;
+	}
+	public List<Activity> getPath() {
+		return this.path;
 	}
 
 	public Iterator<Activity> iterator() {

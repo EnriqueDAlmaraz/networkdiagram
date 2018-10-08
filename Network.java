@@ -130,6 +130,7 @@ public class Network {
             	}
         	}
         	prevPath = p;
+        	pathsConnected=false;
         	output += p.getName();
         }
         return output;

@@ -32,7 +32,7 @@ import java.util.List;
  */
  
 public class Path implements Comparable<Path> {
-	private List<Activity> path;
+	public List<Activity> path;
 	private String name;
 	
 	public Path() {
@@ -51,8 +51,29 @@ public class Path implements Comparable<Path> {
 		return i.getDuration() - this.getDuration();
 	}
 
-	public void addActivity(Activity activity) {
-		this.path.add(activity);
+	public void addActivity(Activity activity) throws Exception {
+		boolean exists = false;
+		for (Activity p: path) {
+			if (p.getName().equals(activity.getName())) {
+				exists = true;
+				throw new Exception();
+			}
+		}
+		if (!exists) {
+			this.path.add(activity);
+		} 
+	}
+	
+	public void addActivity(int index, Activity activity) {
+		boolean exists = false;
+		for (Activity p: path) {
+			if (p.getName().equals(activity.getName())) {
+				exists = true;
+			}
+		}
+		if (!exists) {
+			this.path.add(index, activity);
+		} 
 	}
 	
 	public void setName(String name) {

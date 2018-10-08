@@ -223,7 +223,13 @@ public class GUI {
 			//User clicks submit
 			if(event.getSource() == btnSubmit && activities.size() != 0 && justOnce == 0) {		//justOnce is here if we want to allow the user to submit it only once
 				outputSortedPaths.setText(null);
-				outputSortedPaths.append(NetworkDiagram.createTree(activities));
+				try
+				{
+					outputSortedPaths.append(NetworkDiagram.createTree(activities));
+				} catch (Exception e)
+				{
+					outputSortedPaths.append("Cycle Error, please restart");
+				}
 				//justOnce = 1;
 			}
 			//User click restart

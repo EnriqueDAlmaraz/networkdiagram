@@ -37,30 +37,33 @@ public class NetworkDiagram {
     private static List<Activity> activities;
     private static List<Path> paths;
 	
-	public static String createTree(List<Activity> listActivity) {
+	public static String createTree(List<Activity> listActivity) throws Exception {
     	// Create activities list
 		activities = listActivity;
-		Activity startNode = new Activity("REALSTARTNODE");
-		activities.add(0, startNode);
+		
+		// rootNode is a secret starting node, to catch multiple starting nodes
+		Activity rootNode = new Activity("REALSTARTNODE");
+		activities.add(0, rootNode);
+		
+		// Sort activities, and create an array of nodes to create tree
 		Collections.sort(activities);
 		Activity[] nodes = new Activity[activities.size()];
-    	
-    	// Create Empty tree
     	int count = 0;
         for(Activity activity : activities) {
             nodes[count] = activity;
             nodes[count].setId(count);
             count++;
-        }     
+        }
         
         // Add predecessors as parents
         for(Activity node : nodes) {
-        	// Connect empty predecessor nodes to startNode
+        	// Connect empty predecessor nodes to rootNode
         	if (node.predecessors.size()!=0) {
 	        	if (node.predecessors.get(0).getName().isEmpty()) {
-	        		node.predecessors.get(0).setName(startNode.getName());
+	        		node.predecessors.get(0).setName(rootNode.getName());
 	        	}
         	}
+        	// Add each predecessor as parent of node.
         	for (Predecessor p : node.predecessors) {
         		for(Activity n : nodes) {
         			if (n.getName().equals(p.getName())) {
@@ -72,18 +75,17 @@ public class NetworkDiagram {
 
         // Create list of paths
         paths = new LinkedList<>();
-        
-        List<List<Activity>> lists = getPaths(nodes[0]);
-        for(List<Activity> list : lists) {
+        List<Path> lists = getPaths(nodes[0]);
+        for(Path list : lists) {
         	// Get paths one at a time
         	Path path = new Path();
         	String pathName = "";
-            for(count = 0; count < list.size(); count++) {
-            	Activity currentNode = list.get(count);
-            	if (!currentNode.getName().equals(startNode.getName())) {
+            for(count = 0; count < list.path.size(); count++) {
+            	Activity currentNode = list.path.get(count);
+            	if (!currentNode.getName().equals(rootNode.getName())) {
             		path.addActivity(currentNode);
                     pathName += currentNode.getName();
-                    if(count != list.size() - 1) {
+                    if(count != list.path.size() - 1) {
                         pathName += "-";
                     }
             	}
@@ -111,48 +113,50 @@ public class NetworkDiagram {
         return output;
     }
 	
-    public static List<List<Activity>> getPaths(Activity head) {
+	private static List<Path> getPaths(Activity head) throws Exception {
         if(head == null) { 
             return new ArrayList<>();
         } else { 
+        	// currentPath keeps track of the path to make sure that there are no repeated activities (aka cycles)
+        	Path currentPath = new Path();
         	// Recursively find each path with getEachPath()
-        	List<List<Activity>> retLists = new ArrayList<>();
-
+        	List<Path> retPaths = new ArrayList<>();
             if(head.getChildren().size() == 0) {
-                List<Activity> leafList = new LinkedList<>();
-                leafList.add(head);
-                retLists.add(leafList);
+                Path leafPath = new Path();
+                leafPath.addActivity(head);
+                retPaths.add(leafPath);
             } else {
                 for (Activity node : head.getChildren()) {
-                    List<List<Activity>> nodeLists = getEachPath(node);
-                    for (List<Activity> nodeList : nodeLists) {
-                        nodeList.add(0, head);
-                        retLists.add(nodeList);
+                	List<Path> nodePaths = getEachPath(node, currentPath);
+                    for (Path nodePath : nodePaths) {
+                        nodePath.addActivity(0, head);
+                        retPaths.add(nodePath);
                     }
                 }
             }
-            return retLists;
+            return retPaths;
         }
     }
     
     // Recursive function to find each path
-    private static List<List<Activity>> getEachPath(Activity pos) {
-        List<List<Activity>> retLists = new ArrayList<>();
-
+    private static List<Path> getEachPath(Activity pos, Path currentPath) throws Exception {
+        List<Path> retPaths = new ArrayList<>();
+        
         if(pos.getChildren().size() == 0) {
-            List<Activity> leafList = new LinkedList<>();
-            leafList.add(pos);
-            retLists.add(leafList);
+            Path leafPath = new Path();
+            leafPath.addActivity(pos);
+            retPaths.add(leafPath);
         } else {
-            for (Activity node : pos.getChildren()) {
-                List<List<Activity>> nodeLists = getEachPath(node);
-                for (List<Activity> nodeList : nodeLists) {
-                    nodeList.add(0, pos);
-                    retLists.add(nodeList);
+        	currentPath.addActivity(pos);
+    		for (Activity node : pos.getChildren()) {
+                List<Path> nodePaths = getEachPath(node, currentPath);
+                for (Path nodePath : nodePaths) {
+                    nodePath.addActivity(0, pos);
+                    retPaths.add(nodePath);
                 }
             }
         }
-        return retLists;
+        return retPaths;
     }
    
     public Iterator<Activity> iterator() {

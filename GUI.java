@@ -42,18 +42,18 @@ import java.util.List;
  *  </tr>
  * </table>
  * </center>
-
  */
 public class GUI {
 
-	public JFrame frmTeam;
+	public static JFrame frmTeam;
 	private JTextField textFieldName, textFieldPredecessor, textFieldDuration;
 	private JTextArea outputCreatedActivities, outputSortedPaths;
-	private JButton btnRestart, btnAbout, btnEnter, btnSubmit, btnHelp;
+	public static JButton btnRestart, btnAbout, btnEnter, btnSubmit, btnHelp;
 	private List<Activity> activities;
 	private int justOnce = 0;
 	
 	public GUI() {
+		
 		activities = new LinkedList<>();
 		
 		frmTeam = new JFrame();
@@ -69,10 +69,10 @@ public class GUI {
 		lblName.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		frmTeam.getContentPane().add(lblName);
 		
-		JLabel lblDependencies = new JLabel("Dependencies:");
-		lblDependencies.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblDependencies.setBounds(27, 168, 120, 40);
-		frmTeam.getContentPane().add(lblDependencies);
+		JLabel lblPredecessor = new JLabel("Predecessors:");
+		lblPredecessor.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblPredecessor.setBounds(27, 168, 120, 40);
+		frmTeam.getContentPane().add(lblPredecessor);
 		
 		JLabel lblDuration = new JLabel("Duration:");
 		lblDuration.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -140,7 +140,9 @@ public class GUI {
 		btnRestart.setBounds(450, 481, 97, 25);
 		frmTeam.getContentPane().add(btnRestart);
 		
+		
 		//Add action Listeners
+		frmTeam.getRootPane().setDefaultButton(btnEnter);
 		ActionListener listener = new ButtonListener();
 		btnEnter.addActionListener(listener);
 		btnSubmit.addActionListener(listener);
@@ -185,9 +187,14 @@ public class GUI {
 			}
 		});
 		
-		btnHelp.setBounds(462, 0, 97, 25);
+		btnHelp.setBounds(473, 0, 97, 25);
 		frmTeam.getContentPane().add(btnHelp);
+		
+		//sets focus to textFieldName
+		frmTeam.setVisible(true);
+		textFieldName.requestFocusInWindow();
 	}
+	
 	
 	//This class determines what the buttons are actually going to do 
 	private class ButtonListener implements ActionListener{
@@ -206,6 +213,7 @@ public class GUI {
 	
 			//User clicks enter
 			if (event.getSource() == btnEnter && errors == false) {
+				textFieldName.requestFocus();
 				errors = findInputErrors();
 				Activity newActivity = new Activity(null);
 				newActivity.setName(nodeName);
@@ -214,6 +222,7 @@ public class GUI {
 					newActivity.addPredecessor(predecessors.get(i));
 				}
 				if (errors == false) {
+					textFieldName.requestFocus();
 					activities.add(newActivity);	//Add the new Activity
 					outputCreatedActivities.append(newActivity.toString());			
 					textFieldName.setText("");
@@ -223,13 +232,23 @@ public class GUI {
 			}		
 			//User clicks submit
 			if(event.getSource() == btnSubmit && activities.size() != 0 && justOnce == 0) {		//justOnce is here if we want to allow the user to submit it only once
+				btnEnter.setEnabled(false);
 				outputSortedPaths.setText(null);
-				outputSortedPaths.append(NetworkDiagram.createTree(activities));
+				try
+				{
+					outputSortedPaths.append(Network.createTree(activities));
+				} catch (Exception e)
+				{
+					outputSortedPaths.append(e.getMessage());
+				}
 				//justOnce = 1;
 			}
 			//User click restart
 			if(event.getSource() == btnRestart) {
-				activities.clear();		//Work later on clearing the TextArea and TextField
+				textFieldName.requestFocus();
+				btnEnter.setEnabled(true);
+    			btnSubmit.setEnabled(true);
+				activities.clear();	
 				outputCreatedActivities.setText(null);
 				outputSortedPaths.setText(null);
 				textFieldName.setText("");
@@ -246,16 +265,27 @@ public class GUI {
 		if (alreadyExists(textFieldName.getText()) == true) {
 			JOptionPane.showMessageDialog(frmTeam, "An activity under that name already exists. Please choose another one", null, JOptionPane.ERROR_MESSAGE);
 			errorFound = true;
+			textFieldName.requestFocus();
 		}
 		
 		if (textFieldName.getText().equals("")) {
 			JOptionPane.showMessageDialog(frmTeam, "Pleaser enter a name for the activity", null, JOptionPane.ERROR_MESSAGE);
 			errorFound = true;
+			textFieldName.setText("");
+			textFieldName.requestFocus();
 		}
 		//Error if the user does not enter a duration
 		if (textFieldDuration.getText().equals("")) {
 			JOptionPane.showMessageDialog(frmTeam, "Pleaser enter a duration for the activity", null, JOptionPane.ERROR_MESSAGE);
 			errorFound = true;
+			textFieldDuration.setText("");
+			textFieldDuration.requestFocus();
+		}
+		if(textFieldPredecessor.getText().contains(",")) {
+			JOptionPane.showMessageDialog(frmTeam, "Pleaser enter predecessors with a space in between i.e 'a b c' ", null, JOptionPane.ERROR_MESSAGE);
+			errorFound = true;
+			textFieldPredecessor.setText("");
+			textFieldPredecessor.requestFocus();
 		}
 		else {
 			//Check if the user entered a number for the duration	
@@ -264,7 +294,9 @@ public class GUI {
 	           }
 	           catch(NumberFormatException numberForTesting){				
 	        	   JOptionPane.showMessageDialog(frmTeam, "Invalid duration. Please enter an integer", null, JOptionPane.ERROR_MESSAGE);
-	        	   errorFound = true;			
+	        	   errorFound = true;
+	        	   textFieldDuration.setText("");
+	        	   textFieldDuration.requestFocus();
 	           }
 		}
 				
@@ -282,6 +314,5 @@ public class GUI {
 			}
 		}		
 		return exists;
-	}
-		
+	}	
 } 

@@ -51,8 +51,31 @@ public class Path implements Comparable<Path> {
 		return i.getDuration() - this.getDuration();
 	}
 
-	public void addActivity(Activity activity) {
-		this.path.add(activity);
+	public void addActivity(Activity activity) throws Exception {
+		boolean exists = false;
+		int count = 0;
+		for (Activity p: path) {
+			if (p.getName().equals(activity.getName()) && count==10) {
+				count+=1;
+				exists = true;
+				throw new CycleException("Cycle found. Please restart. : "+p.getName());
+			}
+		}
+		if (!exists) {
+			this.path.add(activity);
+		} 
+	}
+	
+	public void addActivity(int index, Activity activity) {
+		boolean exists = false;
+		for (Activity p: path) {
+			if (p.getName().equals(activity.getName())) {
+				exists = true;
+			}
+		}
+		if (!exists) {
+			this.path.add(index, activity);
+		} 
 	}
 	
 	public void setName(String name) {
@@ -60,6 +83,9 @@ public class Path implements Comparable<Path> {
 	}
 	public String getName() {
 		return this.name;
+	}
+	public List<Activity> getPath() {
+		return this.path;
 	}
 
 	public Iterator<Activity> iterator() {

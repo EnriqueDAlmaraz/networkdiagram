@@ -1,4 +1,5 @@
 import java.util.List;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,7 +34,7 @@ import java.util.LinkedList;
  * </center>
  */
 
-public class Network {
+public class Network extends GUI {
     private static List<Activity> activities;
     private static List<Path> paths;
 	
@@ -73,7 +74,9 @@ public class Network {
         			}
         		}
         		if (!pExists) {
-        			throw new UnconnectedNodeException("Node found not connected to network. Please restart.");
+        			JOptionPane.showMessageDialog(frmTeam, "Node found not connected to network. Please restart.", null, JOptionPane.ERROR_MESSAGE);
+        			btnEnter.setEnabled(false);
+        			btnSubmit.setEnabled(false);
         		}
         	}
         }
@@ -126,7 +129,9 @@ public class Network {
         			}
         		}
         		if (!pathsConnected) {
-            		throw new UnconnectedNodeException("Unconnected nodes found, please restart.");
+        			JOptionPane.showMessageDialog(frmTeam, "Unconnected nodes found, please restart.", null, JOptionPane.ERROR_MESSAGE);
+        			btnEnter.setEnabled(false);
+        			btnSubmit.setEnabled(false);
             	}
         	}
         	prevPath = p;

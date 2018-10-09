@@ -1,7 +1,5 @@
 import java.util.List;
-
 import javax.swing.JOptionPane;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -134,7 +132,6 @@ public class Network extends GUI {
         			JOptionPane.showMessageDialog(frmTeam, "Unconnected nodes found, please restart.", null, JOptionPane.ERROR_MESSAGE);
         			btnEnter.setEnabled(false);
         			btnSubmit.setEnabled(false);
-        			
             	}
         	}
         	prevPath = p;

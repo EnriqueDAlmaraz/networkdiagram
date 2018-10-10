@@ -1,5 +1,4 @@
 import java.util.List;
-import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,7 +33,7 @@ import java.util.LinkedList;
  * </center>
  */
 
-public class Network extends GUI {
+public class Network {
     private static List<Activity> activities;
     private static List<Path> paths;
 	
@@ -64,6 +63,7 @@ public class Network extends GUI {
 	        		node.predecessors.get(0).setName(rootNode.getName());
 	        	}
         	}
+        	
         	// Add each predecessor as parent of node.
         	for (Predecessor p : node.predecessors) {
         		boolean pExists = false;
@@ -74,9 +74,7 @@ public class Network extends GUI {
         			}
         		}
         		if (!pExists) {
-        			JOptionPane.showMessageDialog(frmTeam, "Node found not connected to network. Please restart.", null, JOptionPane.ERROR_MESSAGE);
-        			btnEnter.setEnabled(false);
-        			btnSubmit.setEnabled(false);
+        			throw new UnconnectedNodeException("Unconnected Nodes, please restart: "+ p.getName());
         		}
         	}
         }
@@ -129,9 +127,7 @@ public class Network extends GUI {
         			}
         		}
         		if (!pathsConnected) {
-        			JOptionPane.showMessageDialog(frmTeam, "Unconnected nodes found, please restart.", null, JOptionPane.ERROR_MESSAGE);
-        			btnEnter.setEnabled(false);
-        			btnSubmit.setEnabled(false);
+            		throw new UnconnectedNodeException("Unconnected nodes found, please restart. :" + p.getPath());
             	}
         	}
         	prevPath = p;
@@ -145,8 +141,6 @@ public class Network extends GUI {
         if(head == null) { 
             return new ArrayList<>();
         } else { 
-        	// currentPath keeps track of the path to make sure that there are no repeated activities (aka cycles)
-        	Path currentPath = new Path();
         	// Recursively find each path with getEachPath()
         	List<Path> retPaths = new ArrayList<>();
             if(head.getChildren().size() == 0) {
@@ -155,7 +149,10 @@ public class Network extends GUI {
                 retPaths.add(leafPath);
             } else {
                 for (Activity node : head.getChildren()) {
+                	// currentPath keeps track of the path to make sure that there are no repeated activities (aka cycles)
+                	Path currentPath = new Path();
                 	List<Path> nodePaths = getEachPath(node, currentPath);
+                	currentPath = new Path();
                     for (Path nodePath : nodePaths) {
                         nodePath.addActivity(0, head);
                         retPaths.add(nodePath);

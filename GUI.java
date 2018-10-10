@@ -48,7 +48,7 @@ public class GUI {
 	public static JFrame frmTeam;
 	private JTextField textFieldName, textFieldPredecessor, textFieldDuration;
 	private JTextArea outputCreatedActivities, outputSortedPaths;
-	public static JButton btnRestart, btnAbout, btnEnter, btnSubmit, btnHelp;
+	public static JButton btnRestart, btnAbout, btnEnter, btnSubmit, btnHelp, btnQuit;
 	private List<Activity> activities;
 	private int justOnce = 0;
 	
@@ -127,18 +127,23 @@ public class GUI {
 		//Buttons
 		btnEnter = new JButton("Enter");
 		btnEnter.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnEnter.setBounds(27, 480, 97, 25);
+		btnEnter.setBounds(25, 481, 97, 25);
 		frmTeam.getContentPane().add(btnEnter);
 		
 		btnSubmit = new JButton("Submit");
 		btnSubmit.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnSubmit.setBounds(238, 481, 97, 25);
+		btnSubmit.setBounds(158, 481, 97, 25);
 		frmTeam.getContentPane().add(btnSubmit);
 	
 		btnRestart = new JButton("Restart");
 		btnRestart.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnRestart.setBounds(450, 481, 97, 25);
+		btnRestart.setBounds(291, 481, 97, 25);
 		frmTeam.getContentPane().add(btnRestart);
+		
+		btnQuit = new JButton("Quit");
+		btnQuit.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnQuit.setBounds(425, 481, 97, 25);
+		frmTeam.getContentPane().add(btnQuit);
 		
 		
 		//Add action Listeners
@@ -147,6 +152,7 @@ public class GUI {
 		btnEnter.addActionListener(listener);
 		btnSubmit.addActionListener(listener);
 		btnRestart.addActionListener(listener);
+		btnQuit.addActionListener(listener);
 		
 		//About button already has an action  
 		btnAbout = new JButton("");
@@ -255,7 +261,11 @@ public class GUI {
 				textFieldDuration.setText("");
 				textFieldPredecessor.setText("");
 				//justOnce = 1;
-			}							
+			}
+			
+			if(event.getSource()==btnQuit) {
+				System.exit(0);
+			}
 		}
 	}
 	

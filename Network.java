@@ -96,7 +96,7 @@ public class Network {
                     }
             	}
             }
-            pathName+= ": " + path.getDuration() + "\n";
+            pathName+= ": " + path.getDuration() + ", \n";
             path.setName(pathName);
             
             // Is this path already in the list?

@@ -124,7 +124,7 @@ public class Activity implements Comparable<Activity> {
 	}
 	
 	public String toString() {
-		String result = "Node: "  + name  + "\nPredecessors: " +
+		String result = "Node: "  + name  + " \nPredecessors: " +
 				printPredecessors() + "\nDuration: " + duration + "\n____________\n";				
 		return result;
 	}
